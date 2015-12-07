@@ -2,6 +2,7 @@ package com.example.mcvjetinovic.instagramclient;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayList<InstagramModel> instagramList;
     private InstagramViewAdapter listAdapter;
 
+    private SwipeRefreshLayout swipeContainer;
+
+
 
 //    public static String AssetJSONFile (String filename, Context context) throws IOException {
 //        AssetManager manager = context.getAssets();
@@ -45,15 +49,40 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
+
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchImagesAsync();
+            }
+        });
+
+
+        // Configure the refreshing colors
+        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
+
         instagramList = new ArrayList<>();
         listAdapter = new InstagramViewAdapter(this, instagramList);
 
         final ListView imageList = (ListView) findViewById(R.id.listView);
         imageList.setAdapter(listAdapter);
+        fetchImagesAsync();
+
+
+    }
+
+    private void fetchImagesAsync() {
 
         InstagramClient.get(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+
+                listAdapter.clear();
 
                 Log.d(MAIN_ACTIVITY, "statusCode:" + statusCode);
 
@@ -85,7 +114,10 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                listAdapter.notifyDataSetChanged();
+
+//                listAdapter.notifyDataSetChanged();
+                swipeContainer.setRefreshing(false);
+
 
             }
 
@@ -100,6 +132,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         },getResources(), false);
+
 
     }
 }
