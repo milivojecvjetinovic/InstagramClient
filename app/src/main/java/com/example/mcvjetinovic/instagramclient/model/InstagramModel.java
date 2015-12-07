@@ -1,6 +1,7 @@
 package com.example.mcvjetinovic.instagramclient.model;
 
 import android.provider.Settings;
+import android.text.format.DateFormat;
 import android.text.format.DateUtils;
 import android.util.Log;
 
@@ -8,7 +9,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by mcvjetinovic on 12/1/15.
@@ -38,15 +41,6 @@ public class InstagramModel {
             this.profilePicture = post.getJSONObject("user").getString("profile_picture");
 
 
-            if(post.getJSONObject("caption") != null) {
-                JSONObject caption = post.getJSONObject("caption");
-                this.caption = post.getJSONObject("caption").getString("text");
-                this.timestamp = caption.getLong("created_time");
-                CharSequence relativeTimeSpanString = DateUtils.getRelativeTimeSpanString(this.timestamp, System.currentTimeMillis(),0 ,DateUtils.FORMAT_ABBREV_ALL);
-                this.dateSince = relativeTimeSpanString.toString();
-                Log.d("INSTAGRAM_MODEL", relativeTimeSpanString.toString());
-            }
-
             this.imageHeight = imageResponse.getInt("height");
             this.imageWidth = imageResponse.getInt("width");
 
@@ -69,6 +63,16 @@ public class InstagramModel {
                     Log.i("Comments:", commentText );
                 }
             }
+
+            if(post.getJSONObject("caption") != null) {
+                JSONObject caption = post.getJSONObject("caption");
+                this.caption = caption.getString("text");
+                this.timestamp = caption.getLong("created_time") * 1000;
+                CharSequence relativeTimeSpanString = DateUtils.getRelativeTimeSpanString(this.timestamp, System.currentTimeMillis(),DateUtils.HOUR_IN_MILLIS,DateUtils.FORMAT_ABBREV_ALL);
+                this.dateSince = relativeTimeSpanString.toString();
+                Log.d("INSTAGRAM_MODEL", relativeTimeSpanString.toString());
+            }
+
 
         } catch (JSONException e) {
             e.printStackTrace();

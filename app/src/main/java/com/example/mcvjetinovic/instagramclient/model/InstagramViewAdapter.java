@@ -75,13 +75,17 @@ public class InstagramViewAdapter extends ArrayAdapter<InstagramModel> {
         viewHolder.title.setText(model.getCaption());
         viewHolder.likesCount.setText(String.valueOf(model.getLikesCount()));
         viewHolder.dateCreated.setText(model.getDateSince());
-        viewHolder.commentCount.setText(String.valueOf(model.getCommentCount()));
+        viewHolder.commentCount.setText("Comments: " + String.valueOf(model.getCommentCount()));
+        //clear image
+        viewHolder.image.setImageResource(0);
         Picasso.with(convertView.getContext()).load(model.getImageUrl()).into(viewHolder.image);
 
+
+        viewHolder.profilePicture.setImageResource(0);
         Transformation transformation = new RoundedTransformationBuilder()
-                .borderColor(Color.BLACK)
-                .borderWidthDp(3)
-                .cornerRadiusDp(30)
+//                .borderColor(Color.BLACK)
+//                .borderWidthDp(50)
+                .cornerRadiusDp(4)
                 .oval(true)
                 .build();
 

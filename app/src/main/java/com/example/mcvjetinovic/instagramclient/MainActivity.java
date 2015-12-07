@@ -99,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
                 listAdapter.notifyDataSetChanged();
             }
 
-        },getResources(), true);
+        },getResources(), false);
 
     }
 }
